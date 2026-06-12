@@ -1,7 +1,13 @@
 **Descriptions of .exe files**
 
---Cygwin.exe--:It's a Linux Shell for Windows,necessaryfor developers :)
+-- Cygwin.exe --
+A Linux shell environment for Windows. Required for developers who need to run MontiDroid build scripts (make, bash, git, etc.) natively on Windows systems. Tested on Windows 7 and above.
 
+---> COMING SOON <---
+Additional tooling – too many to list individually. Highlights will include:
+- ARM cross‑compiler wrapper for Windows hosts
+- Automated partitioning tool for bootloader flashing
+- Signature verifier for MontiDroid boot images
+- Hardware diagnostic interface (Signal 41 compatible)
 
---->COMING SOON<---
-*To many to list...
+Stay tuned for updates in the `tools/win32/` folder.
