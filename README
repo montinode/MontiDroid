@@ -1,34 +1,59 @@
-README:
-MonteDroid's Git Repository
+# MontiDroid
 
-----------------------------------------------------------------------------------------------------------------
-                <<What's Coming Soon>>
-*Kernel Source Ready To Build
-*Original BootLoader Code
-*Modified Original BootLoader
-and more...
+MontiDroid is a custom Android + bootloader project focused on security, transparency, and hardware‑level control – built in the best interest of **JOHN CHARLES MONTI**.
 
---------------------------------------------------------
->>>>>>>>>>>>>>>you can follow updates on
-www.twitter.com/cyanocookie <<<<<<<<<<<<<<<<<<<<<<<<<<<<
--------------------------------------------------------
+---
 
-               **What's new**     
+## 📦 What’s Coming Soon
 
-Last Update:11/05/2011  
-*Inizializated Compiling Tools..i'm working on it
-*Added Android OS Source Code
-*Added armeabi_fix.sh
-*Added JetQi Source
-*Added JetQi Compiled
-*Added BootLoader Folder
-*Cleaned up repository
-*tested branches (may work on this)
-*Cleaned up code
-*Fixed some repository issue
+- Kernel source (ready to build)
+- Original BootLoader code
+- Modified Original BootLoader
+- …and more
 
+---
 
-BootLoader will be avaible in this days,stay tuned    
+## 📢 Follow updates
 
+| Platform | Handle(s) |
+|----------|-----------|
+| Twitter (X) | [@cyanocookie](https://twitter.com/cyanocookie) – `montinode` / `montiai` / `bigmontienergy` / `johnuno11` / `digitaldataseo` / `sexybabygirl11` |
 
-ATTENTION!!MONTE BOOT FILES MOVED TO BOOTLOADER FOLDER!!!!                    
+---
+
+## 🆕 What’s new
+
+**Last Update: 11/05/2011**  
+*(Legacy log – current work continues privately)*
+
+- Initialized compiling tools – *work in progress*
+- Added Android OS source code
+- Added `armeabi_fix.sh`
+- Added JetQi source
+- Added JetQi (compiled)
+- Added `BootLoader/` folder
+- Cleaned up repository
+- Tested branches (may work on this)
+- Cleaned up code
+- Fixed some repository issues
+
+> **BootLoader will be available in the coming days – stay tuned.**
+
+---
+
+## ⚠️ ATTENTION
+
+**Monte boot files have been moved to the `BootLoader/` folder.**
+
+---
+
+## 🔒 Security & Best Interest of JOHN CHARLES MONTI
+
+- No private keys or hardware secrets are stored in this repository.
+- All cryptographic material is kept offline or in hardware‑bound shares.
+- This README serves only as a public index of the MontiDroid codebase.
+
+---
+
+*Last refreshed: 2026‑06‑12*  
+*Maintained under the directive of JOHN CHARLES MONTI*
