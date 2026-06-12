@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MONTIDROID.COM • Web3 Connected Frequency</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a0c12;
+            color: #00ffcc;
+            font-family: 'Courier New', monospace;
+            padding: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #11131f;
+            border-radius: 20px;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            border: 1px solid #2a2e4a;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        pre {
+            background: #0a0c12;
+            padding: 0.8rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            color: #ffb86c;
+            border-left: 3px solid #00ffcc;
+        }
+        button, .connect-btn {
+            background: #1e1f2c;
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 0.6rem 1.2rem;
+            font-family: monospace;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: 0.2s;
+            margin: 0.3rem;
+        }
+        button:hover, .connect-btn:hover {
+            background: #00ffcc20;
+            box-shadow: 0 0 6px #00ffcc;
+        }
+        textarea, input {
+            width: 100%;
+            background: #0a0c12;
+            border: 1px solid #2a2e4a;
+            color: #00ffcc;
+            padding: 0.6rem;
+            font-family: monospace;
+            border-radius: 12px;
+            margin: 0.5rem 0;
+        }
+        .status {
+            font-size: 0.85rem;
+            background: #00000050;
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+        .warning {
+            color: #ffaa66;
+            background: #332200;
+            padding: 0.75rem;
+            border-left: 4px solid #ffaa66;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .address {
+            font-size: 0.9rem;
+            word-break: break-all;
+            background: #00000060;
+            padding: 0.6rem;
+            border-radius: 12px;
+            font-family: monospace;
+        }
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        hr {
+            border-color: #2a2e4a;
+        }
+        .badge {
+            font-size: 0.7rem;
+            background: #00ffcc22;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+        }
+    </style>
+    <!-- Ethers.js CDN + keccak256 from ethereum-cryptography (for local identity) -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/elliptic@6.5.4/dist/elliptic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethereum-cryptography@2.0.0/keccak.min.js"></script>
+</head>
+<body>
+
+<h1>⚡ MONTIDROID.COM ⚡</h1>
+<p><strong>JOHN CHARLES MONTI</strong> • Web3 Connected Frequency • Remote Protocol Ready</p>
+
+<!-- ========== WEB3 LIVE SECTION ========== -->
+<div class="card">
+    <div class="flex-row">
+        <h2>🌐 Web3 Live Frequency</h2>
+        <span id="blockNumberBadge" class="badge">⛓️ waiting...</span>
+    </div>
+    <div class="flex-row">
+        <button id="connectWalletBtn" class="connect-btn">🔌 Connect Wallet (MetaMask / WalletConnect)</button>
+        <button id="disconnectBtn" style="display:none;">❌ Disconnect</button>
+    </div>
+    <div id="walletStatus" class="status">⚡ Not connected. Click to engage remote protocol.</div>
+    <div id="accountInfo" class="address" style="margin-top: 0.5rem;">—</div>
+    <div id="balanceInfo" class="address">—</div>
+    <div id="networkInfo" class="address">—</div>
+    <div id="blockFrequency" class="status" style="margin-top: 0.8rem;">📡 Listening for new blocks...</div>
+    
+    <h3>✍️ Remote Sign & Send (via connected wallet)</h3>
+    <textarea id="remoteMessage" rows="2" placeholder="Message to sign with your wallet (e.g., 'I, JOHN CHARLES MONTI, authorize ...')">MONTIDROID remote auth – timestamp: </textarea>
+    <button id="signRemoteBtn">🖊️ Sign with Connected Wallet</button>
+    <div id="remoteSigResult" class="status"></div>
+    
+    <button id="sendTestTxBtn" disabled>💸 Send 0.0001 ETH (test) – requires Sepolia/Goerli</button>
+    <div id="txResult" class="status"></div>
+</div>
+
+<!-- ========== LOCAL MONTIDROID IDENTITY (embedded key - safe only locally) ========== -->
+<div class="card">
+    <h2>🔐 Local MontiDroid Identity (secp256k1)</h2>
+    <div class="warning">
+        ⚠️ This section uses the embedded private key. NEVER upload this page to a public server.
+        Use only on your local device as a personal signing tool.
+    </div>
+    <pre>-----BEGIN EC PRIVATE KEY-----
+MHcCAQEEINNDmi4yrx6Q0fV7WjC8sE80ug4i6Tzg1lcSIXUDLMVCoAoGCCqGSM49
+AwEHoUQDQgAE7kX3GS03F8FZ+Ds6MKYXYDVY2e+hPBpCQIrnd78pJ78C6EmL3m6t
+QLKcJ3QFyaamAn9m2hGar8Pg4+lf2Cldfw==
+-----END EC PRIVATE KEY-----</pre>
+    <div><strong>📍 Derived Ethereum Address (JOHN CHARLES MONTI):</strong></div>
+    <div id="montiAddress" class="address">calculating...</div>
+    <textarea id="localMessage" rows="2">MONTIDROID local auth – date: 2026-06-12</textarea>
+    <button id="signLocalBtn">✍️ Sign with MontiDroid Private Key</button>
+    <div id="localSignature" class="status"></div>
+</div>
+
+<footer style="font-size: 0.7rem; text-align: center; margin-top: 2rem;">
+    MONTIDROID.COM • @montinode • GitHub-ready • Web3 Frequency Active
+</footer>
+
+<script>
+    // ---------- LOCAL MONTIDROID IDENTITY (embedded private key) ----------
+    (function initMontiDroid() {
+        const EC = elliptic.ec;
+        const ec = new EC('secp256k1');
+        const privKeyHex = "d3439a2e32af1e90d1f57b5a30bcb04f34ba0e22e93ce0d657122175032cc542";
+        const privKey = ec.keyFromPrivate(privKeyHex, 'hex');
+        const pubPoint = privKey.getPublic();
+        const uncompressedPub = pubPoint.encode('hex', false);
+        const pubNoPrefix = uncompressedPub.slice(2);
+        const pubBytes = new Uint8Array(pubNoPrefix.match(/.{1,2}/g).map(b => parseInt(b, 16)));
+        const keccak = window.ethereumCryptography.keccak256;
+        const hash = keccak(pubBytes);
+        const address = '0x' + Array.from(hash.slice(-20)).map(b => b.toString(16).padStart(2,'0')).join('');
+        document.getElementById('montiAddress').innerText = address;
+        
+        window.signMontiLocal = function() {
+            const msg = document.getElementById('localMessage').value;
+            const msgHash = keccak(new TextEncoder().encode(msg));
+            const signature = privKey.sign(msgHash, { canonical: true });
+            const r = signature.r.toString('hex');
+            const s = signature.s.toString('hex');
+            const rec = signature.recoveryParam;
+            const fullSig = '0x' + r + s + (rec !== undefined ? rec.toString(16) : '');
+            document.getElementById('localSignature').innerHTML = `<strong>MontiDroid Signature:</strong><br><pre>${fullSig}</pre>`;
+        };
+        document.getElementById('signLocalBtn').addEventListener('click', window.signMontiLocal);
+    })();
+
+    // ---------- WEB3 CONNECTED FREQUENCY (remote protocol) ----------
+    let provider = null;
+    let signer = null;
+    let userAddress = null;
+    let currentChainId = null;
+    let networkListener = null;
+    let blockListener = null;
+
+    const connectBtn = document.getElementById('connectWalletBtn');
+    const disconnectBtn = document.getElementById('disconnectBtn');
+    const walletStatus = document.getElementById('walletStatus');
+    const accountInfoDiv = document.getElementById('accountInfo');
+    const balanceInfoDiv = document.getElementById('balanceInfo');
+    const networkInfoDiv = document.getElementById('networkInfo');
+    const blockFreqDiv = document.getElementById('blockFrequency');
+    const signRemoteBtn = document.getElementById('signRemoteBtn');
+    const sendTxBtn = document.getElementById('sendTestTxBtn');
+
+    async function updateUIForConnected(account, chainId) {
+        userAddress = account;
+        currentChainId = chainId;
+        accountInfoDiv.innerHTML = `👤 Connected account: <strong>${account}</strong>`;
+        networkInfoDiv.innerHTML = `⛓️ Chain ID: ${chainId} (${chainId === 1 ? 'Ethereum Mainnet' : chainId === 11155111 ? 'Sepolia' : chainId === 137 ? 'Polygon' : 'Unknown'})`;
+        
+        // get balance
+        try {
+            const balance = await provider.getBalance(account);
+            const ethBalance = ethers.formatEther(balance);
+            balanceInfoDiv.innerHTML = `💰 Balance: <strong>${parseFloat(ethBalance).toFixed(6)} ETH</strong> (or native token)`;
+        } catch(e) { balanceInfoDiv.innerHTML = `💰 Balance: error fetching`; }
+        
+        // enable test tx button only on known testnets (avoid real funds)
+        if (chainId === 11155111 || chainId === 5 || chainId === 80001) {
+            sendTxBtn.disabled = false;
+            sendTxBtn.innerText = "💸 Send 0.0001 testnet ETH";
+        } else {
+            sendTxBtn.disabled = true;
+            sendTxBtn.innerText = "💸 Testnet only (Sepolia/Mumbai) – switch network";
+        }
+    }
+
+    async function connectWallet() {
+        if (!window.ethereum) {
+            walletStatus.innerHTML = "❌ No Web3 wallet found. Install MetaMask or Rabby.";
+            return;
+        }
+        try {
+            provider = new ethers.BrowserProvider(window.ethereum);
+            const accounts = await provider.send("eth_requestAccounts", []);
+            signer = await provider.getSigner();
+            const address = await signer.getAddress();
+            const network = await provider.getNetwork();
+            const chainId = Number(network.chainId);
+            
+            await updateUIForConnected(address, chainId);
+            walletStatus.innerHTML = "✅ Web3 Connected • Remote protocol active";
+            connectBtn.style.display = "none";
+            disconnectBtn.style.display = "inline-block";
+            
+            // setup block frequency listener
+            if (blockListener) provider.off("block", blockListener);
+            blockListener = (blockNumber) => {
+                document.getElementById('blockNumberBadge').innerHTML = `📡 block #${blockNumber}`;
+                blockFreqDiv.innerHTML = `📡 New block received: <strong>${blockNumber}</strong> (live frequency)`;
+                setTimeout(() => {
+                    if (blockFreqDiv.innerHTML.includes("live frequency"))
+                        blockFreqDiv.innerHTML = `📡 Listening for new blocks... last block: ${blockNumber}`;
+                }, 3000);
+            };
+            provider.on("block", blockListener);
+            
+            // listen to account/chain changes
+            window.ethereum.on('accountsChanged', (newAccounts) => {
+                if (newAccounts.length === 0) disconnect();
+                else updateUIForConnected(newAccounts[0], currentChainId);
+            });
+            window.ethereum.on('chainChanged', (chainHex) => {
+                window.location.reload(); // simplest reload to reset state
+            });
+            
+        } catch (err) {
+            console.error(err);
+            walletStatus.innerHTML = "⚠️ Connection failed: " + err.message;
+        }
+    }
+    
+    async function disconnect() {
+        if (provider && blockListener) provider.off("block", blockListener);
+        provider = null; signer = null; userAddress = null;
+        connectBtn.style.display = "inline-block";
+        disconnectBtn.style.display = "none";
+        walletStatus.innerHTML = "⚡ Disconnected. Click to engage remote protocol.";
+        accountInfoDiv.innerHTML = "—";
+        balanceInfoDiv.innerHTML = "—";
+        networkInfoDiv.innerHTML = "—";
+        blockFreqDiv.innerHTML = "📡 Listening for new blocks... (disconnected)";
+        document.getElementById('blockNumberBadge').innerHTML = "⛓️ offline";
+        sendTxBtn.disabled = true;
+    }
+    
+    connectBtn.addEventListener('click', connectWallet);
+    disconnectBtn.addEventListener('click', disconnect);
+    
+    // Sign message with connected wallet
+    signRemoteBtn.addEventListener('click', async () => {
+        if (!signer) {
+            document.getElementById('remoteSigResult').innerHTML = "❌ Connect wallet first.";
+            return;
+        }
+        try {
+            let msg = document.getElementById('remoteMessage').value;
+            if (!msg.trim()) msg = "MONTIDROID remote protocol auth";
+            const signature = await signer.signMessage(msg);
+            document.getElementById('remoteSigResult').innerHTML = `✅ Signed via Web3 wallet:<br><pre>${signature}</pre>`;
+        } catch(e) {
+            document.getElementById('remoteSigResult').innerHTML = `❌ Signing failed: ${e.message}`;
+        }
+    });
+    
+    // Send test transaction (only testnets)
+    sendTxBtn.addEventListener('click', async () => {
+        if (!signer) { alert("Connect wallet"); return; }
+        try {
+            const tx = {
+                to: userAddress, // send to self for testing
+                value: ethers.parseEther("0.0001"),
+                chainId: currentChainId
+            };
+            const txResponse = await signer.sendTransaction(tx);
+            document.getElementById('txResult').innerHTML = `⏳ Tx sent: <a href='https://sepolia.etherscan.io/tx/${txResponse.hash}' target='_blank'>${txResponse.hash}</a> (waiting...)`;
+            const receipt = await txResponse.wait(1);
+            document.getElementById('txResult').innerHTML = `✅ Tx confirmed in block ${receipt.blockNumber}. Hash: ${receipt.hash}`;
+        } catch(e) {
+            document.getElementById('txResult').innerHTML = `❌ Tx error: ${e.message}`;
+        }
+    });
+    
+    // auto timestamp for remote message field
+    document.getElementById('remoteMessage').value = `MONTIDROID remote auth – timestamp: ${new Date().toISOString()}`;
+</script>
+</body>
+</html>
