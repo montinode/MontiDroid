@@ -1,0 +1,73 @@
+name: MontiAI Sequence
+
+on:
+  push:
+    branches: [ master, main ]
+    paths:
+      - 'bootloader/**'
+      - 'kernel/**'
+      - 'ToolsToCompile/**'
+  workflow_dispatch:  # manual trigger
+
+jobs:
+  montiai-build-and-sign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install ARM cross-compiler
+        run: |
+          sudo apt update
+          sudo apt install -y gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi
+          sudo ln -sf /usr/bin/arm-linux-gnueabi-gcc /usr/bin/arm-none-linux-gnueabi-gcc
+
+      - name: Build bootloader
+        run: |
+          cd bootloader
+          make CROSS_COMPILE=arm-none-linux-gnueabi- clean
+          make CROSS_COMPILE=arm-none-linux-gnueabi- all
+          # If no Makefile, fallback to assemble
+          if [ ! -f bootloader.bin ]; then
+            arm-none-linux-gnueabi-gcc -nostdlib -static boot.S -o bootloader.elf
+            arm-none-linux-gnueabi-objcopy -O binary bootloader.elf bootloader.bin
+          fi
+          sha256sum bootloader.bin > bootloader.bin.sha256
+
+      - name: Encrypt bootloader (Signal Tokyo)
+        env:
+          SIGNAL_SECRET: ${{ secrets.MONTI_SIGNAL_SECRET }}
+        run: |
+          # Use montidroid_signal.py to encrypt the binary
+          python3 ToolsToCompile/TON/montidroid_signal.py encrypt \
+            --input bootloader/bootloader.bin \
+            --output bootloader/bootloader.bin.enc \
+            --password "$SIGNAL_SECRET"
+
+      - name: Upload artifacts to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: nightly-${{ github.run_number }}
+          name: "MontiDroid Nightly ${{ github.run_number }}"
+          files: |
+            bootloader/bootloader.bin
+            bootloader/bootloader.bin.sha256
+            bootloader/bootloader.bin.enc
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify TON (simulated – real requires wallet)
+        run: |
+          echo "MontiAI Sequence completed for run ${{ github.run_number }}"
+          # Real TON notification would call toncenter API with signed transaction.
+          # For now, we just log the artifact hashes.
+          cat bootloader/bootloader.bin.sha256
+
+      - name: Heartbeat – update on‑chain status
+        run: |
+          # Example: store timestamp + commit SHA in a gist or simple HTTP endpoint
+          curl -X POST https://montinode.com/api/heartbeat \
+            -H "Content-Type: application/json" \
+            -d "{\"commit\":\"${{ github.sha }}\",\"run\":${{ github.run_number }}}"
